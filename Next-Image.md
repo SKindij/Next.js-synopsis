@@ -75,7 +75,7 @@ Since Next.js does not have access to remote files during the build process, you
 #### remotePatterns
 
 ```ts
-  // next.config.ts
+  // next.config.js
   module.exports = {
     images: {
       remotePatterns: [
@@ -85,10 +85,21 @@ Since Next.js does not have access to remote files during the build process, you
           port: '',
           pathname: '/account123/**',
         },
+        {
+          protocol: "https",
+          hostname: "your-website.com",
+        },
+        {
+          protocol: "http",
+          hostname: "localhost",
+        },
       ],
     },
   }
-  // src property of next/image must start with https://example.com/account123/
+  /* src property of next/image must start with:
+       https://example.com/account123/
+       https://your-website.com
+       http://localhost
 ```
 
 #### domains
@@ -97,7 +108,7 @@ Since Next.js does not have access to remote files during the build process, you
 Only use `domains` if you own all the content served from the domain.
 
 ```ts
-  // next.config.ts
+  // next.config.js
     module.exports = {
       images: {
         domains: ['assets.acme.com'],
@@ -108,7 +119,7 @@ Only use `domains` if you own all the content served from the domain.
 #### loaderFile
 
 ```ts
-  // next.config.ts
+  // next.config.js
   module.exports = {
     images: {
       loader: 'custom',
