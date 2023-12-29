@@ -25,8 +25,97 @@ Next.js `<Image />` extends HTML `<img>` element with features for automatic ima
   }
 ```
 
+### Local Images
 
+To use it, `import` your `.jpg`, `.png`, or `.webp` image files.
 
+```tsx
+  import Image from 'next/image'
+  import profilePic from './me.png'
+ 
+  export default function Page() {
+    return (
+      <Image src={profilePic}
+        alt="Picture of the author"
+        // width={500} automatically provided
+        // height={500} automatically provided
+        // blurDataURL="data:..." automatically provided
+        // placeholder="blur" // optional blur-up while loading
+      />
+    )
+  }
+```
+
+> **Warning:** Dynamic `await import()` or `require()` are not supported.
+> The import must be static so it can be analyzed at build time.
+
+### Remote Images
+
+To it, the `src` property should be a URL string.
+
+Since Next.js does not have access to remote files during the build process, you'll need to provide the width, height and optional blurDataURL props manually.
+
+```tsx
+  import Image from 'next/image'
+ 
+  export default function Page() {
+    return (
+      <Image
+        src="https://s3.amazonaws.com/my-bucket/profile.png"
+        alt="Picture of the author"
+        width={500}
+        height={500}
+      />
+    )
+  }
+```
+
+> To safely allow optimizing images, define list of supported URL patterns in `next.config.js`. 
+
+#### remotePatterns
+
+```ts
+  // next.config.ts
+  module.exports = {
+    images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'example.com',
+          port: '',
+          pathname: '/account123/**',
+        },
+      ],
+    },
+  }
+  // src property of next/image must start with https://example.com/account123/
+```
+
+#### domains
+> Deprecated since Next.js 14 in favor of strict `remotePatterns` in order to protect your application from malicious users. 
+
+Only use `domains` if you own all the content served from the domain.
+
+```ts
+  // next.config.ts
+    module.exports = {
+      images: {
+        domains: ['assets.acme.com'],
+      },
+    }
+```
+
+#### loaderFile
+
+```ts
+  // next.config.ts
+  module.exports = {
+    images: {
+      loader: 'custom',
+      loaderFile: './my/image/loader.js',
+    },
+  }
+```
 
 
 
