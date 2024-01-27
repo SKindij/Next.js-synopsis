@@ -29,25 +29,42 @@ Next.js `<Image />` extends HTML `<img>` element with features for automatic ima
 
 To use it, `import` your `.jpg`, `.png`, or `.webp` image files.
 
+If you're serving images from a source that you control, consider modifying your image pipeline to normalize the images to a specific size.
+
 ```tsx
-  import Image from 'next/image'
-  import profilePic from './me.png'
+  import Image from 'next/image';
+  import mountainsPic from '../../public/images/mountains.png';
  
-  export default function Page() {
+  export default function ResponsiveElement() {
     return (
-      <Image src={profilePic}
-        alt="Picture of the author"
-        // width={500} automatically provided
-        // height={500} automatically provided
-        // blurDataURL="data:..." automatically provided
-        // placeholder="blur" // optional blur-up while loading
-      />
+      <div sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Image alt="Some mountains"
+          // import automatically set width and height
+          src={mountains}    
+          sizes="100vw"
+          // make the image display full width
+          style={{ width: '100%', height: 'auto' }}
+          // blurDataURL="data:..." automatically provided
+          // placeholder="blur" // optional blur-up while loading
+        />
+      </div>
     )
-  }
+  };
 ```
 
 > **Warning:** Dynamic `await import()` or `require()` are not supported.
 > The import must be static so it can be analyzed at build time.
+
+#### Image Styling
++ we recommend using `className` prop.
+  - This can be an imported CSS Module, a global stylesheet, etc.
++ When using `fill`, the parent element must have `position: relative`
+  - This is necessary for the proper rendering of the image element in that layout mode.
+
+
+
+
+
 
 ### Remote Images
 
