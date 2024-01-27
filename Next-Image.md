@@ -55,16 +55,47 @@ If you're serving images from a source that you control, consider modifying your
 > **Warning:** Dynamic `await import()` or `require()` are not supported.
 > The import must be static so it can be analyzed at build time.
 
+```tsx
+  import Box from '@mui/material/Box';
+  import Image from 'next/image';
+  import mountainsPic from '../../public/images/mountains.png';
+ 
+  export default function ResponsiveElement() {
+    return (
+      <Box sx={{ position: 'relative', height:{ xs:'420px', md:'540px'} }}>
+        <Image alt="Some mountains"
+          src={angelBrendPic} fill
+          style={{
+            objectFit: 'contain', // cover, contain, none
+          }}
+        />
+      </div>
+    )
+  };
+```
+
 #### Image Styling
 + we recommend using `className` prop.
   - This can be an imported CSS Module, a global stylesheet, etc.
 + When using `fill`, the parent element must have `position: relative`
   - This is necessary for the proper rendering of the image element in that layout mode.
 
-
-
-
-
+```tsx
+  import Image from 'next/image';
+  import mountainsPic from '../../public/images/mountains.png';
+ 
+  export default function BackgroundElement() {
+    return (
+      <div>
+        <Image alt="Some mountains"
+          src={mountains} placeholder="blur"
+          quality={100} fill sizes="100vw"
+          style={{ objectFit: 'cover' }}
+        />
+      </div>
+    )
+  };
+```
 
 ### Remote Images
 
