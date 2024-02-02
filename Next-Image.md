@@ -60,7 +60,7 @@ If you're serving images from a source that you control, consider modifying your
   import Image from 'next/image';
   import mountainsPic from '../../public/images/mountains.png';
  
-  export default function ResponsiveElement() {
+  export default function BackgroundElement() {
     return (
       <Box sx={{ position: 'relative', height:{ xs:'420px', md:'540px'} }}>
         <Image alt="Some mountains"
@@ -176,11 +176,27 @@ Only use `domains` if you own all the content served from the domain.
   }
 ```
 
-
-
-
-
 - - -
+
+### type next image
+
+```ts
+  import { StaticImageData } from 'next/image';
+
+  export interface ITeamMember {
+    id:number;
+    name:string;
+    photo?:StaticImageData;
+    professional?:string;
+    description?:string;
+    territory?:{
+      city:string;
+      logo:string;
+    };
+  };
+
+```
+
 
 #### Learn how to use the Next.js Image Component
 
