@@ -50,6 +50,65 @@ _This attribute is used to set the title of the document._
 ## metadataBase
 _It is a convenience option to set a base URL prefix for metadata fields that require a fully qualified URL._
 
+```typescript
+  // @/app/layout.tsx
+  
+  export const metadata = {
+    metadataBase: new URL('https://acme.com'),
+    alternates: {
+      canonical: '/', // <link rel="canonical" href="https://acme.com" />
+      languages: {
+        'en-US': '/en-US', // <link rel="alternate" hreflang="en-US" href="https://acme.com/en-US" />
+        'de-DE': '/de-DE', // <link rel="alternate" hreflang="de-DE" href="https://acme.com/de-DE" />
+      },
+    },
+  }
+```
+
+### openGraph
+_is a protocol used to determine how your content will be displayed on social networks_
+
+```typescript
+  // @/app/layout.tsx
+  import { Metadata } from 'next'; // if using TypeScript
+
+  export const metadata: Metadata = {
+    openGraph: {
+      title: 'Next.js',
+      description: 'The React Framework for the Web',
+      url: 'https://nextjs.org',
+      siteName: 'Next.js',
+      images: [
+        {
+          url: 'https://nextjs.org/og.png',
+          width: 1200, height: 630,
+          alt: 'Preview image for my site',
+        },
+      ],
+      locale: 'en_US',
+      type: 'website',
+    },
+  };
+```
+
+If your application is in production you can easily test it by sending the link to a social like Telegram and check the result./
+But if you are in a developing state, I suggest using an extension called
+“OGraph Previewer”.
+
+Here's an example of how the file structure for the OG and Twitter images might look:
+```go
+  ├── app
+  │   ├── page.tsx
+  │   ├── ...
+  │   ├── opengraph-image.png
+  │   ├── twitter-image.png
+  │   ├── opengraph-image.alt.txt
+  │   ├── twitter-image.alt.txt
+  │   └── ...
+  └── ...
+```
+
+
 
 
 
