@@ -136,6 +136,16 @@ To create a project, run: ``npx create-next-app@latest``.
 ### 💢 Open Graph and Twitter Images 💢
 
 
+## 📚 Coverage of certain topics
+
++ [Next Image](https://github.com/SKindij/Next.js-synopsis/blob/main/Next-Image.md)
++ [Fetching Data](https://github.com/SKindij/Next.js-synopsis/blob/main/DB-Fetching-Data.md)
++ [Metadata Fields](https://github.com/SKindij/Next.js-synopsis/blob/main/Metadata-Fields.md)
++ [Next Iframe](https://github.com/SKindij/Next.js-synopsis/blob/main/Next-Iframe.md)
+
+
+
+
 
 
 
