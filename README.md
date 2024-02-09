@@ -140,7 +140,7 @@ To create a project, run: ``npx create-next-app@latest``.
 
 + [Next Image](https://github.com/SKindij/Next.js-synopsis/blob/main/Next-Image.md)
 + [Fetching Data](https://github.com/SKindij/Next.js-synopsis/blob/main/DB-Fetching-Data.md)
-+ [Metadata Fields](https://github.com/SKindij/Next.js-synopsis/blob/main/Metadata-Fields.md)
++ [Next.js SEO](https://github.com/SKindij/Next.js-synopsis/blob/main/Next.js-SEO.md)
 + [Next Iframe](https://github.com/SKindij/Next.js-synopsis/blob/main/Next-Iframe.md)
 
 
