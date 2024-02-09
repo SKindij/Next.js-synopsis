@@ -108,6 +108,31 @@ Here's an example of how the file structure for the OG and Twitter images might 
   └── ...
 ```
 
+## robots
+_Add or generate a robots.txt file that matches the [Robots Exclusion Standard](https://en.wikipedia.org/wiki/Robots.txt#Standard) in the root of app directory to tell search engine crawlers which URLs they can access on your site._
+
+
+
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
