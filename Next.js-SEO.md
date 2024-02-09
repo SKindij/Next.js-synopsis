@@ -1,6 +1,8 @@
-# Site Metadata
+# Next.js SEO
 
-## title & description
+## Site Metadata
+
+### title & description
 _This attribute is used to set the title of the document._
 
 ```typescript
@@ -25,7 +27,7 @@ _This attribute is used to set the title of the document._
   }
 ```
 
-## Basic Fields
+### Basic Fields
 
 |         layout.tsx & page.js                          |               hnml ``<head>`` output                          |            data assignment                        |
 |-------------------------------------------------------|---------------------------------------------------------------|---------------------------------------------------|
@@ -47,7 +49,7 @@ _This attribute is used to set the title of the document._
 }  
 ```
 
-## metadataBase
+### metadataBase
 _It is a convenience option to set a base URL prefix for metadata fields that require a fully qualified URL._
 
 ```typescript
@@ -111,14 +113,28 @@ Here's an example of how the file structure for the OG and Twitter images might 
 ## robots
 _Add or generate a robots.txt file that matches the [Robots Exclusion Standard](https://en.wikipedia.org/wiki/Robots.txt#Standard) in the root of app directory to tell search engine crawlers which URLs they can access on your site._
 
+### 
 
-
-###
-
-
-
-
-
+```typescript
+  // @/app/layout.tsx
+  import type { Metadata } from 'next'
+ 
+  export const metadata: Metadata = {
+    robots: {
+      index: false,
+      follow: true,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: false,
+        noimageindex: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+  }
+```
 
 
 
