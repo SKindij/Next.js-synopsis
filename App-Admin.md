@@ -38,17 +38,101 @@ Create an **auth.config.ts** file at the root of our project that exports an aut
     pages: {
       signIn: '/auth/login',
     },
+    callbacks: {
+      authorized({ auth, request: { nextUrl } }) {
+        const isLoggedIn = !!auth?.user;
+        const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+        if (isOnDashboard) {
+          if (isLoggedIn) return true;
+          return false; // Redirect unauthenticated users to login page
+        } else if (isLoggedIn) {
+          return Response.redirect(new URL('/dashboard', nextUrl));
+        }
+        return true;
+      },
+    },
+    providers: [], // Add providers with an empty array for now
+  } satisfies NextAuthConfig;
+```
+
+> &emsp;You can use the pages option to specify the route for custom sign-in, sign-out, and error pages.\
+>
+> &emsp;The `authorized` callback is used to verify if the request is authorized to access a page via Next.js Middleware.
+> It is called before a request is completed. The `auth` property contains the user's session, and the `request` property contains the incoming request.
+>
+> &emsp;The `providers` option is an array where you list different login options.
+
+In the root of your project, create a file called **middleware.ts** and paste the following code:
+```typescript
+  import NextAuth from 'next-auth';
+  import { authConfig } from './auth.config';
+ 
+  export default NextAuth(authConfig).auth;
+ 
+  export const config = {
+    // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+    matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
   };
 ```
 
-> You can use the pages option to specify the route for custom sign-in, sign-out, and error pages.
+> &emsp;Here you're initializing NextAuth.js with the `authConfig` object and exporting the `auth` property.
+> You're also using the `matcher` option from Middleware to specify that it should run on specific paths.
 
+### Password hashing
+&emsp;_It's good practice to hash passwords before storing them in a database. 
+Hashing converts a password into a fixed-length string of characters, which appears random, providing a layer of security even if the user's data is exposed._
 
+&emsp;Create a separate **auth.ts** file for the `bcrypt` package. This is because `bcrypt` relies on Node.js APIs not available in Next.js Middleware.
+```typescript
+  import NextAuth from 'next-auth';
+  import { authConfig } from './auth.config';
+  import Credentials from 'next-auth/providers/credentials';
+  import { z } from 'zod';
+  import { sql } from '@vercel/postgres';
+  import type { User } from '@/app/lib/definitions';
+  import bcrypt from 'bcrypt';
 
+  // function that queries the user from the database
+  async function getUser(email: string): Promise<User | undefined> {
+    try {
+      const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
+      return user.rows[0];
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+      throw new Error('Failed to fetch user.');
+    }
+  };
 
+  export const { auth, signIn, signOut } = NextAuth({
+    ...authConfig,
+    providers: [Credentials({
+      // to handle the authentication logic
+      async authorize(credentials) {
+        // to validate email and password before checking if user exists in database
+        const parsedCredentials = z
+          .object({ email: z.string().email(), password: z.string().min(6) })
+          .safeParse(credentials);
 
+        if (parsedCredentials.success) {
+          const { email, password } = parsedCredentials.data;
+		      // queries the user from the database
+          const user = await getUser(email);
+          if (!user) return null;
+		      // to check if the passwords match
+		      const passwordsMatch = await bcrypt.compare(password, user.password);
+		      if (passwordsMatch) return user;
+        }
+	      console.log('Invalid credentials');
+        return null;	
+      },
+    })],
+  });
+```
 
+> &emsp;[Credentials](https://authjs.dev/getting-started/providers/credentials-tutorial) allows users to log in with a username and a password.\
+> Generally recommended to use alternative providers such as [OAuth](https://authjs.dev/getting-started/providers/oauth-tutorial) or [email](https://authjs.dev/getting-started/providers/email-tutorial) providers.
 
+### Login Form
 
 
 
