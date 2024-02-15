@@ -139,10 +139,33 @@ Hashing converts a password into a fixed-length string of characters, which appe
 > Generally recommended to use alternative providers such as [OAuth](https://authjs.dev/getting-started/providers/oauth-tutorial) or [email](https://authjs.dev/getting-started/providers/email-tutorial) providers.
 
 ### Login Form
+_You need to connect the auth logic with your login form._
 
+In your **actions.ts** file, create a new action called `authenticate`.
+```typescript
+  'use server';
+  import { signIn } from '@/auth';
+  import { AuthError } from 'next-auth';
 
+  export async function authenticate(
+    prevState:string|undefined,
+    formData:FormData,
+  ) {
+    try {
+      await signIn('credentials', formData);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        switch (error.type) {
+          case 'CredentialsSignin':
+            return 'Invalid credentials.';
+          default:
+            return 'Something went wrong.';
+        }
+      }
+      throw error;
+    }
+  }
+```
 
-
-
-
-
+Finally, in your **login-form.tsx** component, you can use React's `useFormState` to call the server action and handle form errors, and use `useFormStatus` to handle the pending state of the form.
+> This Hooks are currently only available in **React’s Canary** and experimental channels.
