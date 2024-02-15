@@ -35,13 +35,19 @@ Create an **auth.config.ts** file at the root of our project that exports an aut
   import type { NextAuthConfig } from 'next-auth';
  
   export const authConfig = {
+    // to specify route for custom sign-in, sign-out, and error pages
     pages: {
+      // user will be redirected to custom login page
       signIn: '/auth/login',
     },
+    // logic to protect your routes
     callbacks: {
+      // used to verify if request is authorized to access page via Next.js Middleware
+      // it is called before a request is completed
       authorized({ auth, request: { nextUrl } }) {
         const isLoggedIn = !!auth?.user;
         const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+        // prevent users from accessing dashboard pages unless they are logged in
         if (isOnDashboard) {
           if (isLoggedIn) return true;
           return false; // Redirect unauthenticated users to login page
@@ -51,22 +57,19 @@ Create an **auth.config.ts** file at the root of our project that exports an aut
         return true;
       },
     },
-    providers: [], // Add providers with an empty array for now
+    providers: [], // add providers with an empty array for now
   } satisfies NextAuthConfig;
 ```
 
-> &emsp;You can use the pages option to specify the route for custom sign-in, sign-out, and error pages.\
->
-> &emsp;The `authorized` callback is used to verify if the request is authorized to access a page via Next.js Middleware.
-> It is called before a request is completed. The `auth` property contains the user's session, and the `request` property contains the incoming request.
->
+> &emsp;You can use the `pages` option to specify the route for custom sign-in, sign-out, and error pages.\
+> The `auth` property contains the user's session, and the `request` property contains the incoming request.
 > &emsp;The `providers` option is an array where you list different login options.
 
 In the root of your project, create a file called **middleware.ts** and paste the following code:
 ```typescript
   import NextAuth from 'next-auth';
   import { authConfig } from './auth.config';
- 
+  // initializing NextAuth.js with authConfig object
   export default NextAuth(authConfig).auth;
  
   export const config = {
@@ -75,7 +78,7 @@ In the root of your project, create a file called **middleware.ts** and paste th
   };
 ```
 
-> &emsp;Here you're initializing NextAuth.js with the `authConfig` object and exporting the `auth` property.
+> &emsp;Here you're exporting the `auth` property.\
 > You're also using the `matcher` option from Middleware to specify that it should run on specific paths.
 
 ### Password hashing
@@ -86,6 +89,7 @@ Hashing converts a password into a fixed-length string of characters, which appe
 ```typescript
   import NextAuth from 'next-auth';
   import { authConfig } from './auth.config';
+  // `credentials` is used to generate form on sign in page
   import Credentials from 'next-auth/providers/credentials';
   import { z } from 'zod';
   import { sql } from '@vercel/postgres';
@@ -102,27 +106,29 @@ Hashing converts a password into a fixed-length string of characters, which appe
       throw new Error('Failed to fetch user.');
     }
   };
-
+  // this file spreads our authConfig object
   export const { auth, signIn, signOut } = NextAuth({
     ...authConfig,
+    // array where we list different login options such as Google or GitHub
     providers: [Credentials({
       // to handle the authentication logic
       async authorize(credentials) {
-        // to validate email and password before checking if user exists in database
+        // validate email and password before checking if user exists in database
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(6) })
           .safeParse(credentials);
 
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
-		      // queries the user from the database
+          // queries the user from database
           const user = await getUser(email);
           if (!user) return null;
-		      // to check if the passwords match
-		      const passwordsMatch = await bcrypt.compare(password, user.password);
-		      if (passwordsMatch) return user;
+          // to check if the passwords match
+          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (passwordsMatch) return user;
         }
-	      console.log('Invalid credentials');
+        // to prevent user from logging in
+        console.log('Invalid credentials');
         return null;	
       },
     })],
