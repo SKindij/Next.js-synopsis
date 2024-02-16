@@ -144,16 +144,9 @@ To create a project, run: ``npx create-next-app@latest``.
 + [Next Iframe](https://github.com/SKindij/Next.js-synopsis/blob/main/Next-Iframe.md)
 
 
+### Here are some resources to continue exploring Next.js:
 
-
-
-
-
-
-
-
-
-
-
-
++ [Next.js Documentation](https://nextjs.org/docs)
++ [Find your Template](https://vercel.com/templates?framework=next.js)
++ [Vercel YouTube](https://www.youtube.com/@VercelHQ/videos)
 
